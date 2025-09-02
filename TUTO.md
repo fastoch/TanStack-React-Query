@@ -2,6 +2,8 @@ src = https://www.youtube.com/watch?v=e74rB-14-m8
 
 date = January 2025
 
+---
+
 # Intro
 
 In this comprehensive tutorial, we dive into the core features of React Query (now known as TanStack React Query),
@@ -9,12 +11,16 @@ and demonstrate how it simplifies **data fetching** and **state management** in 
 
 We'll delve into advanced topics like **caching**, **data invalidation**, and working with **mutations** to create and update data.  
 
+---
+
 # Why do we need TanStack Query?
 
 - Because "**state management**" in a React app can be very complex.  
 - Because constant "**refetching**" kills our app's performance
 
 "TanStack React Query is the ultimate tool for effortless data fetching, caching, and real-time updates."  
+
+---
 
 # Project setup
 
@@ -25,6 +31,8 @@ We'll delve into advanced topics like **caching**, **data invalidation**, and wo
 - variant = TypeScript
 - run `npm i`
 - install TanStack via `npm i @tanstack/react-query`
+
+---
 
 # Configuring TanStack Query client
 
@@ -48,6 +56,8 @@ createRoot(document.getElementById('root')!).render(
 ```
 
 Now, we can access the different hooks and functions provided by TanStack from anywhere in our app.  
+
+---
 
 # Fetching data from an API
 
@@ -127,9 +137,22 @@ It requires 2 parameters:
 
 `useEffect` was never created with the intention of being what we should use to fetch data.  
 
-## Caching 
+---
+
+# Caching 
 
 TanStack Query automatically caches the responses of our fetch queries.  
-So, by default, if we revisit the component, it will show us the cached data instead of fetching it again.  
+So by default, if we revisit the component, it will show us the cached data instead of fetching it again.  
 
 We can also choose to refetch the data after a certain amount of time.  
+To do that, we need to use the `staleTime` property of the `useQuery` hook.  
+After the specified delay (in ms), the data will be fetched again.  
+
+## Use caching instead of fetching data again and again
+
+Without TanStack Query caching feature, our components fetch data every time they get mounted.  
+
+---
+
+# Fetching data by ID
+
