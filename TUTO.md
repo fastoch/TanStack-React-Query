@@ -56,7 +56,7 @@ We'll use the jsonplaceholder API.
 - in the `App.tsx`component, remove everything in the `return` statement except for the empty fragment
 - then, remove useless imports and useState
 
-The App file should look like that:
+The initial `App.tsx` file should look like that:
 ```tsx
 import './App.css'
 
@@ -71,3 +71,57 @@ function App() {
 
 export default App
 ```
+
+To fetch data from the jsonplaceholder API, we'll use the `useQuery` hook from TanStack Query.  
+Here's how our `App.tsx` file looks like now:
+```tsx
+import './App.css'
+import { useQuery } from '@tanstack/react-query'
+
+const fetchPosts = async (): Promise<Post[]> => {
+  const response = await fetch('https://jsonplaceholder.typicode.com/posts')
+  if (!response.ok) throw new Error("Error fetching data")
+  return response.json()
+}
+
+type Post = {
+  id: number;
+  title: string;
+  body: string;
+}
+
+function App() {
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ['posts'],
+    queryFn: fetchPosts,
+  })
+
+  if (isLoading) {
+    return <span>Loading...</span>
+  }
+
+  if (isError) {
+    return <span>Error: {(error as Error).message}</span>
+  }
+
+  return (
+    <div className="App">
+      <h1>Posts</h1>
+      {data?.map((post) => <article key={post.id}><h2>{post.title}</h2></article>)}
+    </div>
+  )
+}
+
+export default App
+```
+
+## Most common hooks in React Query
+
+- `useQuery`
+- `useMutation`
+
+## The `useQuery` hook
+
+It requires 2 parameters:
+- a list of query **keys**: which will help us **identify** each of our queries
+- a function which is going to fetch the data from the API
