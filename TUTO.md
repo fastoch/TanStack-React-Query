@@ -91,22 +91,19 @@ type Post = {
 }
 
 function App() {
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ['posts'],
     queryFn: fetchPosts,
   })
 
-  if (isLoading) {
-    return <span>Loading...</span>
-  }
+  if (isLoading) return <span>Loading...</span>
 
-  if (isError) {
-    return <span>Error: {(error as Error).message}</span>
-  }
+  if (error) return <span>Error: {(error as Error).message}</span>
 
   return (
     <div className="App">
       <h1>Posts</h1>
+      {/* while fetching data, the type is 'undefined', hence the question mark below */}
       {data?.map((post) => <article key={post.id}><h2>{post.title}</h2></article>)}
     </div>
   )
@@ -125,3 +122,14 @@ export default App
 It requires 2 parameters:
 - a list of query **keys**: which will help us **identify** each of our queries
 - a function which is going to fetch the data from the API
+
+## Stop using `useEffect`
+
+`useEffect` was never created with the intention of being what we should use to fetch data.  
+
+## Caching 
+
+TanStack Query automatically caches the responses of our fetch queries.  
+So, by default, if we revisit the component, it will show us the cached data instead of fetching it again.  
+
+We can also choose to refetch the data after a certain amount of time.  

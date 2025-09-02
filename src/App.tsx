@@ -14,22 +14,19 @@ type Post = {
 }
 
 function App() {
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ['posts'],
     queryFn: fetchPosts,
   })
 
-  if (isLoading) {
-    return <span>Loading...</span>
-  }
+  if (isLoading) return <span>Loading...</span>
 
-  if (isError) {
-    return <span>Error: {(error as Error).message}</span>
-  }
+  if (error) return <span>Error: {(error as Error).message}</span>
 
   return (
     <div className="App">
       <h1>Posts</h1>
+      {/* while fetching data, the type is 'undefined', hence the question mark below */}
       {data?.map((post) => <article key={post.id}><h2>{post.title}</h2></article>)}
     </div>
   )
