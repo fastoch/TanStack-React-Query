@@ -62,6 +62,7 @@ Now, we can access the different hooks and functions provided by TanStack from a
 # Fetching data from an API
 
 We'll use the jsonplaceholder API.  
+Check the `Posts.tsx` and `App.tsx` files for an example of how to fetch data from an API.  
 
 - in the `App.tsx`component, remove everything in the `return` statement except for the empty fragment
 - then, remove useless imports and useState
@@ -155,4 +156,12 @@ Without TanStack Query caching feature, our components fetch data every time the
 ---
 
 # Fetching data by ID
+
+check the `PostById.tsx` and `App.tsx` files for an example of how to fetch data by ID.  
+
+---
+
+# Introduction to Mutations
+
+check the `CreatePost.tsx` and `App.tsx` files  
 

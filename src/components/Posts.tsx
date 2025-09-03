@@ -27,7 +27,7 @@ export const Posts = () => {
     <>
       <h1>Posts</h1>
       {/* while fetching data, the type is 'undefined', hence the question mark below */}
-      {data?.map((post) => <article key={post.id}><h2>{post.title}</h2></article>)}
+      {data?.map((post) => <article key={post.id}><h3>{post.title}</h3></article>)}
     </>
   )
 }

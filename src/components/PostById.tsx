@@ -25,11 +25,10 @@ export const PostById = ({ id }: { id: number }) => {
 
   return (
     <>
-      <h1>Post</h1>
+      <h1>PostById</h1>
       {data && (
         <article key={data.id}>
           <h2>{data.title}</h2>
-          <p>{data.body}</p>
         </article>
       )}
     </>
