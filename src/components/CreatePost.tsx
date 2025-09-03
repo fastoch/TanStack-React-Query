@@ -1,9 +1,12 @@
 import { useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
 
 export const CreatePost = () => {
   const [title, setTitle] = useState('')
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const {} = useMutation()
+
+  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     // mutate
     console.log(title)
@@ -12,9 +15,9 @@ export const CreatePost = () => {
   return (
     <>
       <h1>Let's create a post</h1>
-      <form onSubmit={handleSubmit}>
+      <form>
         <input type="text" placeholder="Post title..." onChange={(e) => setTitle(e.target.value)}/>
-        <button>Create</button>
+        <button onClick={handleSubmit}>Create</button>
       </form>
     </>
   )

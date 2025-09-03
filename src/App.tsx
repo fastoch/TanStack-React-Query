@@ -11,7 +11,9 @@ function App() {
     <>
       <button onClick={() => setIsMounted((prev) => !prev)}>Toggle</button>
       {isMounted && <Posts />}
+      <hr />
       <PostById id={1} />
+      <hr />
       <CreatePost />
     </>
   )
