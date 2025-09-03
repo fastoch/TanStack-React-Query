@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import type { Post } from './Posts'
 
 type NewPost = Omit<Post, 'id'>
@@ -19,9 +19,14 @@ const createPost = async (newPost: NewPost) => {
 export const CreatePost = () => {
   const [title, setTitle] = useState('')
 
+  const queryClient = useQueryClient()
+
   // useMutation returns a mutate function
   const { mutate } = useMutation<Post, Error, NewPost>({
     mutationFn: createPost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['posts']})
+    },
   })
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
