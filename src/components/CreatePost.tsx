@@ -2,7 +2,9 @@ import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import type { Post } from './Posts'
 
-const createPost = async (newPost: Post) => {
+type NewPost = Omit<Post, 'id'>
+
+const createPost = async (newPost: NewPost) => {
   const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
     method: 'POST',
     body: JSON.stringify(newPost),
@@ -17,15 +19,14 @@ const createPost = async (newPost: Post) => {
 export const CreatePost = () => {
   const [title, setTitle] = useState('')
 
-  const {} = useMutation({
+  // useMutation returns a mutate function
+  const { mutate } = useMutation<Post, Error, NewPost>({
     mutationFn: createPost,
-  
   })
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    // mutate
-    console.log(title)
+    mutate({ title, body: "This is a new post" })
   }
 
   return (
