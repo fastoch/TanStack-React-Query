@@ -6,7 +6,7 @@ const fetchPosts = async (): Promise<Post[]> => {
   return response.json()
 }
 
-type Post = {
+export type Post = {
   id: number;
   title: string;
   body: string;
