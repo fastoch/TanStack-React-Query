@@ -27,6 +27,11 @@ export const CreatePost = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['posts']})
     },
+    onMutate: async (newPost) => {
+      await queryClient.cancelQueries({ queryKey: ['posts'] })
+      const previousPosts = queryClient.getQueryData<Post[]>(['posts'])
+      
+    }
   })
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {

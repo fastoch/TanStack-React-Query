@@ -367,6 +367,16 @@ This is one of the best tools to make our app production-ready.
 Optimistic updates in the context of TanStack Query is a **technique** where the UI is immediately updated 
 to reflect a **predicted** state change before the actual server mutation (like POST, PUT, DELETE) completes.  
 
-This creates a fast, responsive user experience by "optimistically" assuming the server operation will succeed, 
+This creates a fast and responsive user experience by "optimistically" assuming the server operation will succeed, 
 thus avoiding any delay that would otherwise happen while waiting for the server response.  
 
+If the server mutation actually fails, React Query will roll back the change.  
+But if a significant amount of our requests fail, then we need to fix our backend code.  
+
+## How to implement optimistic updates?
+
+In our call to the `useMutation` function (in the CreatePost component), we need to add the `onMutate` property.  
+
+```tsx
+
+```
