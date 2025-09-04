@@ -354,7 +354,19 @@ But if we were to use an API to which we could really post data, the newly creat
 This is why we need to use TanStack React Query.  
 Because it allows us to control the state of our server data.  
 
-With `useState` our `useContext`, we know how to manage the state of our local data.  
+With `useState` or `useContext`, we know how to manage the state of our local data.  
 But to deal with the different states of our application on the server, we need to use TanStack Query.  
 
-TanStack Query allows us to synchronize data between the server of our app (the backend) and the UI.
+TanStack Query allows us to synchronize data between the server of our app (the backend) and the UI.  
+This is one of the best tools to make our app production-ready.  
+
+---
+
+# Implementing Optimistic Updates 
+
+Optimistic updates in the context of TanStack Query is a **technique** where the UI is immediately updated 
+to reflect a **predicted** state change before the actual server mutation (like POST, PUT, DELETE) completes.  
+
+This creates a fast, responsive user experience by "optimistically" assuming the server operation will succeed, 
+thus avoiding any delay that would otherwise happen while waiting for the server response.  
+
