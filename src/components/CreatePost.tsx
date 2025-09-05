@@ -28,10 +28,14 @@ export const CreatePost = () => {
       queryClient.invalidateQueries({ queryKey: ['posts']})
     },
     onMutate: async (newPost) => {
+      // cancel any running queries for new posts (backup data)
       await queryClient.cancelQueries({ queryKey: ['posts'] })
+      // get the current list of posts from the query cache 
       const previousPosts = queryClient.getQueryData<Post[]>(['posts'])
-      
-    }
+      // immediately update the local cache by adding the newPost to the list
+      queryClient.setQueryData(["posts"], (old: Post[] | undefined) => [...(old || []), {...newPost }])
+      return { previousPosts } // returning the backup in case the API call fails and a rollback is needed)
+    },
   })
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {

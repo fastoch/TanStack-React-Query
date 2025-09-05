@@ -309,14 +309,18 @@ export const CreatePost = () => {
 When we click on **Create** to simulate a new post creation, we want to see it displayed 
 at the bottom of our list of posts.  
 
-For that, we need to **refetch** the data inside our `Posts` component when we create a new post.  
+**WARNING**: this won't actually update the data on the jsonplaceholder's server, which is why our new post won't show up.  
+But we should see the corresponding POST request in the dev tools (network tab).  
+Later on, when explaining "optimistic updates", we'll see how to make the new posts show up.
+
+To add a new post, we need to **refetch** the data inside our `Posts` component every time we create a new post.  
 
 ## How to do that?
 
 In the `useMutation` of our `CreatePost` component, we need to add the `onSuccess` property.  
 
 If the post gets successfully created, then we will invalidate the query that we do in the `Posts` component.  
-This way, the `data` we get from the `useQuery` in the `Posts` component will get **refetch**ed.  
+This way, the `data` we get from the `useQuery` in the `Posts` component will automatically get **refetch**ed.  
 
 To allow the `CreatePost` component to access the query inside the `Posts` component, 
 we also need to import and use the `useQueryClient` hook.  
@@ -375,7 +379,45 @@ But if a significant amount of our requests fail, then we need to fix our backen
 
 ## How to implement optimistic updates?
 
-In our call to the `useMutation` function (in the CreatePost component), we need to add the `onMutate` property.  
+In our call to the `useMutation` function in the `CreatePost` component, we need to add the `onMutate` callback.  
+
+- This callback takes an async function that is executed before the actual mutation (the API call to create a new post) 
+happens, and it receives the same variable as the mutation function: `newPost`
+
+- The next line cancels any currently running queries where the query key is `['posts']`, which prevents a 
+background refetch
+
+- `previousPosts` receives the current data in the query cache for `['posts']`, so we have a backup of the old state,
+which can be used to roll back the UI if the mutation fails
+
+- the `.setQueryData` line it the "optimistic" part, where we are immediately updating the local cache by 
+adding the new post to the existing list.
+
+```tsx
+const { mutate } = useMutation<Post, Error, NewPost>({
+  mutationFn: createPost,
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['posts']})
+  },
+  onMutate: async (newPost) => {
+    // cancel any running queries for new posts (backup data)
+    await queryClient.cancelQueries({ queryKey: ['posts'] })
+    // get the current list of posts from the query cache 
+    const previousPosts = queryClient.getQueryData<Post[]>(['posts'])
+    // immediately update the local cache by adding the newPost to the list
+    queryClient.setQueryData(["posts"], (old: Post[] | undefined) => [...(old || []), {...newPost }])
+    return { previousPosts } // returning the backup in case the API call fails and a rollback is needed)
+  },
+})
+```
+
+Now, if we create a new post, we should see it for a brief moment at the bottom of our list.  
+It disappears because of the `onSuccess` callback that invalidates the query (which triggers a data refetch).  
+But if we comment out the `onSuccess` block, it will persist, and we can even add more posts to the list.  
+
+## We should also handle errors
+
+With the `onError` callback of course.  
 
 ```tsx
 
