@@ -21,21 +21,29 @@ export const CreatePost = () => {
 
   const queryClient = useQueryClient()
 
-  // useMutation returns a mutate function
-  const { mutate } = useMutation<Post, Error, NewPost>({
+  // useMutation takes 4 generic arguments (the last one is for 'context' in the onError callback)
+  const { mutate } = useMutation<Post, Error, NewPost, { previousPosts: Post[] | undefined }>({
     mutationFn: createPost,
+    // if the mutation succeeds 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['posts']})
     },
+    // optimistic update (the mutation is in progress and we want to update the UI before it finishes)
     onMutate: async (newPost) => {
       // cancel any running queries for new posts (backup data)
       await queryClient.cancelQueries({ queryKey: ['posts'] })
       // get the current list of posts from the query cache 
       const previousPosts = queryClient.getQueryData<Post[]>(['posts'])
-      // immediately update the local cache by adding the newPost to the list
-      queryClient.setQueryData(["posts"], (old: Post[] | undefined) => [...(old || []), {...newPost }])
+      // immediately update the local cache by adding the newPost to the list 
+      queryClient.setQueryData(["posts"], (old: Post[]) => [...(old || []), { ...newPost }])
       return { previousPosts } // returning the backup in case the API call fails and a rollback is needed)
     },
+    // if the mutation fails, rollback to the previous state
+    onError: (err, newPost, context) => {
+      queryClient.setQueryData(['posts'], context?.previousPosts)
+      console.log(`Error: ${err.message}`)
+      console.log(`We couldn't create the new post: ${JSON.stringify(newPost)}`)
+    }
   })
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
